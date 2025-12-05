@@ -1,0 +1,8 @@
+{
+    "require": {
+        "endroid/qr-code": "^1.9",
+        "chillerlan/php-qrcode": "^5.0",
+        "ph-7/qrcode-generator-php-class": "^2.2",
+        "dompdf/dompdf": "^3.1"
+    }
+}

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Горящие места ALA-DOH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --dark-bg: #1a1a2e;
+            --darker-bg: #16213e;
+            --card-bg: #0f3460;
+            --text-light: #e6e6e6;
+            --accent: #e94560;
+            --available: #2d4263;
+            --booked: #4a4a4a;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--darker-bg) !important;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .flight-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid #2d4059;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .flight-header {
+            background-color: var(--darker-bg);
+            padding: 15px;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .seat-map {
+            background-color: var(--darker-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .seat {
+            width: 36px;
+            height: 36px;
+            margin: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .available {
+            background-color: var(--available);
+            color: white;
+            border: 1px solid #4a7b9d;
+        }
+
+        .booked {
+            background-color: var(--booked);
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .burning {
+            background-color: var(--accent);
+            color: white;
+            animation: burning 1.5s infinite;
+            border: 1px solid #ff6b81;
+            position: relative;
+        }
+
+        .burning::after {
+            content: "🔥";
+            position: absolute;
+            right: -8px;
+            top: -8px;
+            font-size: 12px;
+        }
+
+        .aisle {
+            width: 60px;
+            background: transparent;
+            border: none;
+        }
+
+        @keyframes burning {
+            0% {
+                box-shadow: 0 0 5px var(--accent);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 15px var(--accent);
+                transform: scale(1.05);
+            }
+
+            100% {
+                box-shadow: 0 0 5px var(--accent);
+                transform: scale(1);
+            }
+        }
+
+        .map-container {
+            height: 250px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid #2d4059;
+        }
+
+        .price-tag {
+            background-color: var(--darker-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .badge-hot {
+            background-color: var(--accent);
+            animation: burning 1.5s infinite;
+        }
+
+        .flight-info {
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                    class="bi bi-airplane-fill me-2" viewBox="0 0 16 16">
+                    <path
+                        d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849Z" />
+                </svg>
+                <span class="fw-bold">Amadeus</span> <span class="text-danger">Hot Seats</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <h2 class="text-center mb-4">Горящие места <span class="text-danger">Almaty (ALA) → Doha (DOH)</span>
+                </h2>
+
+                <div class="map-container">
+                    <div id="flight-map" style="height: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Рейс 1 -->
+        <div class="flight-card">
+            <div class="flight-header d-flex justify-content-between align-items-center">
+                <div class="flight-info">
+                    <h4 class="mb-1">QR 392</h4>
+                    <p class="mb-0 text-muted">Almaty (ALA) → Doha (DOH) · Boeing 787-8 Dreamliner</p>
+                </div>
+                <div>
+                    <span class="badge badge-hot px-3 py-2">HOT SEATS!</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="seat-map">
+                            <h6 class="mb-3">Economy Class · 2 горящих места</h6>
+
+                            <!-- Ряд 10 -->
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="text-muted me-2">10</div>
+                                <div class="seat available">A</div>
+                                <div class="seat available">B</div>
+                                <div class="aisle"></div>
+                                <div class="seat burning" title="Горящее место!">E</div>
+                                <div class="seat burning" title="Горящее место!">F</div>
+                            </div>
+
+                            <!-- Ряд 11 -->
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="text-muted me-2">11</div>
+                                <div class="seat available">A</div>
+                                <div class="seat booked">B</div>
+                                <div class="aisle"></div>
+                                <div class="seat booked">E</div>
+                                <div class="seat available">F</div>
+                            </div>
+
+                            <!-- Ряд 12 -->
+                            <div class="d-flex align-items-center">
+                                <div class="text-muted me-2">12</div>
+                                <div class="seat booked">A</div>
+                                <div class="seat booked">B</div>
+                                <div class="aisle"></div>
+                                <div class="seat available">E</div>
+                                <div class="seat available">F</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="d-flex flex-column h-100">
+                            <div class="mb-3">
+                                <h6>15 Jun 2024</h6>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="fw-bold">ALA</div>
+                                        <div class="text-muted small">08:00</div>
+                                    </div>
+                                    <div class="flex-grow-1 text-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">DOH</div>
+                                        <div class="text-muted small">11:30</div>
+                                    </div>
+                                </div>
+                                <div class="text-muted small mt-1">Время в пути: 4ч 30м</div>
+                            </div>
+
+                            <div class="price-tag mt-auto">
+                                <div class="text-muted small">Цена от</div>
+                                <div class="d-flex align-items-end">
+                                    <span class="text-decoration-line-through me-2">$320</span>
+                                    <span class="fs-4 fw-bold text-danger">$245</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm w-100 mt-2">Забронировать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Рейс 2 -->
+        <div class="flight-card">
+            <div class="flight-header d-flex justify-content-between align-items-center">
+                <div class="flight-info">
+                    <h4 class="mb-1">QR 394</h4>
+                    <p class="mb-0 text-muted">Almaty (ALA) → Doha (DOH) · Airbus A350-900</p>
+                </div>
+                <div>
+                    <span class="badge badge-hot px-3 py-2">HOT SEATS!</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="seat-map">
+                            <h6 class="mb-3">Economy Class · 3 горящих места</h6>
+
+                            <!-- Ряд 8 -->
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="text-muted me-2">8</div>
+                                <div class="seat burning" title="Горящее место!">A</div>
+                                <div class="seat available">B</div>
+                                <div class="aisle"></div>
+                                <div class="seat burning" title="Горящее место!">E</div>
+                                <div class="seat burning" title="Горящее место!">F</div>
+                            </div>
+
+                            <!-- Ряд 9 -->
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="text-muted me-2">9</div>
+                                <div class="seat booked">A</div>
+                                <div class="seat booked">B</div>
+                                <div class="aisle"></div>
+                                <div class="seat available">E</div>
+                                <div class="seat available">F</div>
+                            </div>
+
+                            <!-- Ряд 10 -->
+                            <div class="d-flex align-items-center">
+                                <div class="text-muted me-2">10</div>
+                                <div class="seat available">A</div>
+                                <div class="seat available">B</div>
+                                <div class="aisle"></div>
+                                <div class="seat booked">E</div>
+                                <div class="seat booked">F</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="d-flex flex-column h-100">
+                            <div class="mb-3">
+                                <h6>16 Jun 2024</h6>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="fw-bold">ALA</div>
+                                        <div class="text-muted small">14:20</div>
+                                    </div>
+                                    <div class="flex-grow-1 text-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">DOH</div>
+                                        <div class="text-muted small">17:50</div>
+                                    </div>
+                                </div>
+                                <div class="text-muted small mt-1">Время в пути: 4ч 30м</div>
+                            </div>
+
+                            <div class="price-tag mt-auto">
+                                <div class="text-muted small">Цена от</div>
+                                <div class="d-flex align-items-end">
+                                    <span class="text-decoration-line-through me-2">$340</span>
+                                    <span class="fs-4 fw-bold text-danger">$255</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm w-100 mt-2">Забронировать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Инициализация карты
+        const map = L.map('flight-map').setView([35.5, 60.0], 3);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors, © CARTO'
+        }).addTo(map);
+
+        // Добавляем маркеры для Алматы и Дохи
+        const ala = L.marker([43.2389, 76.8897]).addTo(map)
+            .bindPopup('Almaty (ALA)');
+
+        const doh = L.marker([25.2611, 51.5651]).addTo(map)
+            .bindPopup('Doha (DOH)');
+
+        // Добавляем линию маршрута
+        const route = L.polyline(
+            [[43.2389, 76.8897], [25.2611, 51.5651]],
+            { color: '#e94560', weight: 2, dashArray: '5,5' }
+        ).addTo(map);
+
+        // Устанавливаем границы карты чтобы показать весь маршрут
+        map.fitBounds([
+            [43.2389, 76.8897],
+            [25.2611, 51.5651]
+        ]);
+
+        // Логика для бронирования мест
+        document.querySelectorAll('.seat').forEach(seat => {
+            seat.addEventListener('click', function () {
+                if (this.classList.contains('available') || this.classList.contains('burning')) {
+                    this.classList.remove('available', 'burning');
+                    this.classList.add('booked');
+                    this.title = 'Забронировано';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

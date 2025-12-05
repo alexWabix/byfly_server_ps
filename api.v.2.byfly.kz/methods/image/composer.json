@@ -1,0 +1,6 @@
+{
+    "require": {
+        "razmik/yandex-vision": "^0.1.0",
+        "mindee/mindee": "^1.10"
+    }
+}

@@ -1,0 +1,6 @@
+RewriteEngine On
+
+RewriteRule ^index\.html$ index.php [L,QSA]
+
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php

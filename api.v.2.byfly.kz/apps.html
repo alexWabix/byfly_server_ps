@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Установка приложения ByFly Travel</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+        <style>
+        body {
+            background: url('https://manager.byfly.kz/assets/img/2342.png') repeat;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .dark-container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        .timer {
+            text-align: center;
+        }
+        .timer h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .timer .countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #bc0000;
+        }
+        .instruction-card {
+            background-color: rgba(0, 0, 0, 0.85);
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .instruction-header {
+            background-color: #bc0000;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #bc0000;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #bc0000;
+        }
+        iframe {
+            border-radius: 10px;
+        }
+        .countdown{
+            font-size: 36px;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="container py-5">
+            <!-- Timer Section -->
+            <div class="dark-container text-center">
+                <h1 class="mb-3">До старта продаж осталось:</h1>
+                <div class="countdown" id="countdown">Загрузка...</div>
+            </div>
+
+            <h1 class="text-center my-5">Как установить приложение ByFly
+                Travel</h1>
+
+            <div class="row g-4">
+                <!-- iPhone Instructions -->
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <div class="instruction-header">Для iPhone</div>
+                        <div class="p-4">
+                            <ol class="mb-4">
+                                <li>Перейдите по ссылке <a
+                                        href="https://testflight.apple.com/join/zuFTMA2f"
+                                        class="text-warning"
+                                        target="_blank">TestFlight</a>.</li>
+                                <li>Установите приложение TestFlight из App
+                                    Store, если оно не установлено.</li>
+                                <li>Откройте TestFlight и примите приглашение на
+                                    установку ByFly Travel.</li>
+                                <li>Нажмите «Установить» и дождитесь завершения
+                                    установки.</li>
+                            </ol>
+                            <a href="https://testflight.apple.com/join/zuFTMA2f"
+                                class="btn btn-primary w-100">Скачать для
+                                iPhone</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Android Instructions -->
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <div class="instruction-header">Для Android</div>
+                        <div class="p-4">
+                            <ol class="mb-4">
+                                <li>Скачайте APK-файл по ссылке <a
+                                        href="https://byfly.kz/app.apk"
+                                        class="text-warning"
+                                        target="_blank">APK</a>.</li>
+                                <li>Разрешите установку приложений из
+                                    неизвестных источников в настройках
+                                    телефона.</li>
+                                <li>Найдите скачанный файл и нажмите
+                                    «Установить».</li>
+                                <li>После завершения установки откройте
+                                    приложение и войдите в аккаунт.</li>
+                            </ol>
+                            <a href="https://api.v.2.byfly.kz/app.apk"
+                                class="btn btn-primary w-100">Скачать для
+                                Android</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Instructions -->
+            <div class="row g-4 mt-5">
+                <!-- iPhone Video -->
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <div class="instruction-header">Видеоинструкция для
+                            iPhone</div>
+                        <div class="p-4">
+                            <div class="ratio ratio-16x9">
+                                <iframe
+                                    src="https://www.youtube.com/embed/uWd_JPf3pmI"
+                                    title="Видеоинструкция для iPhone"
+                                    allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Android Video -->
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <div class="instruction-header">Видеоинструкция для
+                            Android</div>
+                        <div class="p-4">
+                            <div class="ratio ratio-16x9">
+                                <iframe
+                                    src="https://www.youtube.com/embed/npLltAMeh6s"
+                                    title="Видеоинструкция для Android"
+                                    allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+        // Timer script
+        function startCountdown() {
+            const targetDate = new Date('2024-12-07T10:00:00').getTime();
+
+            function updateTimer() {
+                const now = new Date().getTime();
+                const difference = targetDate - now;
+
+                if (difference <= 0) {
+                    document.getElementById('countdown').innerText = 'Продажи начались!';
+                    clearInterval(timer);
+                    return;
+                }
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('countdown').innerText = 
+                    `${days}д ${hours}ч ${minutes}м ${seconds}с`;
+            }
+
+            const timer = setInterval(updateTimer, 1000);
+            updateTimer(); // Call immediately to avoid delay
+        }
+
+        document.addEventListener('DOMContentLoaded', startCountdown);
+    </script>
+    </body>
+</html>

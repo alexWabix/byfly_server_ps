@@ -1,0 +1,72 @@
+# ===========================================
+# ByFly Server - Git Ignore
+# ===========================================
+
+# ----- Node.js -----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ----- WhatsApp Web JS -----
+.wwebjs_auth/
+.wwebjs_cache/
+
+# ----- IDE & Editors -----
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ----- Logs -----
+*.log
+logs/
+*.log.*
+
+# ----- Environment -----
+.env
+.env.local
+.env.*.local
+
+# ----- Cache & Temp -----
+*.cache
+.cache/
+tmp/
+temp/
+
+# ----- Large Media Files -----
+*.mp3
+*.mp4
+*.mov
+*.wav
+*.avi
+*.zip
+*.apk
+*.psd
+*.HEIC
+
+# ----- Large Images (user avatars) -----
+api.v.2.byfly.kz/methods/user/avatars/
+
+# ----- Generated Files -----
+*.dat
+
+# ----- Uploads & User Content -----
+manager.byfly.kz/loaded/
+manager.byfly.kz/uploads/
+
+# ----- Composer (PHP) -----
+/vendor/
+composer.phar
+
+# ----- Backup Files -----
+*.bak
+*.backup
+*.old
+
+# ----- OS Files -----
+Thumbs.db
+ehthumbs.db
+Desktop.ini

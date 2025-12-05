@@ -1,0 +1,25 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appIDs": [
+                    "XGJXWNJ2X4.kz.byfly.appoffice.kzByflyAppoffice"
+                ],
+                "paths": [
+                    "*"
+                ],
+                "components": [
+                    {
+                        "/": "/*"
+                    }
+                ]
+            }
+        ]
+    },
+    "webcredentials": {
+        "apps": [
+            "XGJXWNJ2X4.kz.byfly.appoffice.kzByflyAppoffice"
+        ]
+    }
+}

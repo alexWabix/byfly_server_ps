@@ -1,0 +1,100 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
+}
+
+/* Стили для карточек призов */
+.prize-card {
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.prize-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Календарь */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-header {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f1f1f1;
+}
+
+.calendar-day {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #eee;
+    min-height: 40px;
+    position: relative;
+}
+
+.calendar-day.empty {
+    background-color: #f9f9f9;
+}
+
+.calendar-day.sunday {
+    background-color: #fff0f0;
+}
+
+.calendar-day.past {
+    opacity: 0.6;
+}
+
+.event-dot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #dc3545;
+}
+
+/* Градиентная кнопка */
+.btn-gradient {
+    background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    background: linear-gradient(135deg, #c82333 0%, #8a1822 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Тень для карточек */
+.shadow-lg {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shadow-lg:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+
+    .calendar-header,
+    .calendar-day {
+        padding: 5px;
+        font-size: 0.8rem;
+    }
+}

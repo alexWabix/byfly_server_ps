@@ -1,0 +1,20 @@
+{
+  "name": "razmik/yandex-vision",
+  "description": "Распознавание документов",
+  "type": "library",
+  "require": {
+    "php": ">=7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "razmik\\yandex_vision\\": "src/",
+      "tests\\": "tests"
+    }
+  },
+  "authors": [
+    {
+      "name": "Ilia Rozinsky",
+      "email": "ilyha_roza@mail.ru"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "kz.appoffice.byfly_travel",
+      "sha256_cert_fingerprints":
+        ["41:0F:A4:34:A9:2F:8C:B5:03:D8:1B:8F:3B:8C:1C:6F:90:D1:E6:CA:42:1A:29:D6:42:70:5C:76:95:6F:DC:AD"]
+    }
+  }
+]

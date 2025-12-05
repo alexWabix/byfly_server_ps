@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaspi SmartPOS API - Документация и Тестирование</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Prism.js для подсветки кода -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #6f42c1;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #fd7e14;
+            --info-color: #0dcaf0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: calc(100vh - 100px);
+            border-right: 1px solid #dee2e6;
+        }
+
+        .nav-link {
+            color: #495057;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 2px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .content-section {
+            display: none;
+            padding: 30px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .method-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .method-header {
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            color: white;
+            padding: 20px;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .get-badge {
+            background: var(--info-color);
+        }
+
+        .post-badge {
+            background: var(--success-color);
+        }
+
+        .test-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .response-panel {
+            background: #212529;
+            color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.show {
+            display: inline-block;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-success {
+            background: var(--success-color);
+        }
+
+        .status-error {
+            background: var(--danger-color);
+        }
+
+        .status-warning {
+            background: var(--warning-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .port-selector {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            padding: 8px 15px;
+        }
+
+        .port-selector option {
+            background: #333;
+            color: white;
+        }
+
+        .code-block {
+            background: #2d3748;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-test {
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .alert-custom {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .https-warning {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: none;
+        }
+
+        .proxy-form {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .btn-proxy {
+            background: linear-gradient(135deg, var(--warning-color), #ffa726);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-proxy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .api-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-credit-card-2-front text-primary"></i>
+                Kaspi SmartPOS API
+            </a>
+            <div class="d-flex align-items-center">
+                <label class="text-muted me-2">Порт терминала:</label>
+                <select id="portSelector" class="form-select form-select-sm" style="width: auto;">
+                    <option value="130">130</option>
+                    <option value="131">131</option>
+                    <option value="132">132</option>
+                    <option value="133">133</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="main-container">
+            <div class="row g-0">
+                <!-- Боковая панель -->
+                <div class="col-md-3 sidebar">
+                    <div class="p-3">
+                        <h5 class="text-muted mb-3">Навигация</h5>
+                        <nav class="nav flex-column">
+                            <a class="nav-link active" href="#" data-section="overview">
+                                <i class="bi bi-house-door me-2"></i>Обзор
+                            </a>
+                            <a class="nav-link" href="#" data-section="payment">
+                                <i class="bi bi-credit-card me-2"></i>Платежи
+                            </a>
+                            <a class="nav-link" href="#" data-section="qr-scanner">
+                                <i class="bi bi-qr-code-scan me-2"></i>QR-сканер
+                            </a>
+                            <a class="nav-link" href="#" data-section="errors">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Коды ошибок
+                            </a>
+                            <a class="nav-link" href="#" data-section="examples">
+                                <i class="bi bi-code-slash me-2"></i>Примеры
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Основной контент -->
+                <div class="col-md-9">
+                    <!-- Обзор -->
+                    <div id="overview" class="content-section active">
+                        <div class="hero-section">
+                            <div class="container">
+                                <h1 class="hero-title">Kaspi SmartPOS API</h1>
+                                <p class="hero-subtitle">Полная документация и интерактивное тестирование API</p>
+
+                                <div class="api-info">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><i class="bi bi-credit-card me-2"></i>Платежи</h6>
+                                            <p class="mb-0">http://109.175.215.40:<span id="currentPort">130</span></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="bi bi-camera me-2"></i>Камеры и QR</h6>
+                                            <p class="mb-0">http://109.175.215.40:3000</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HTTPS Warning -->
+                        <div class="https-warning">
+                            <h5><i class="bi bi-shield-exclamation me-2"></i>Важное уведомление о безопасности</h5>
+                            <p class="mb-3">
+                                Поскольку эта страница загружена по HTTPS, а API терминалов работает по HTTP,
+                                браузер блокирует запросы из соображений безопасности (Mixed Content Policy).
+                            </p>
+                            <p class="mb-0">
+                                <strong>Решения:</strong>
+                            </p>
+                            <ul class="mb-0 mt-2">
+                                <li>Используйте HTTP версию этой страницы для тестирования</li>
+                                <li>Используйте CORS-прокси (кнопка ниже в каждом тесте)</li>
+                                <li>Отключите проверку Mixed Content в браузере (только для разработки)</li>
+                                <li>Используйте инструменты типа Postman или curl</li>
+                            </ul>
+                        </div>
+
+                        <div class="container mt-5">
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <div class="feature-card">
+                                        <i class="bi bi-credit-card feature-icon"></i>
+                                        <h4>Платежи</h4>
+                                        <p>Инициация, отслеживание и отмена платежей через терминалы Kaspi</p>
+                                        <small class="text-muted">Порт: <span id="paymentPort">130</span></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="feature-card">
+                                        <i class="bi bi-qr-code-scan feature-icon"></i>
+                                        <h4>QR-сканер</h4>
+                                        <p>Сканирование QR-кодов и работа с камерами терминала</p>
+                                        <small class="text-muted">Порт: 3000</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="feature-card">
+                                        <i class="bi bi-gear feature-icon"></i>
+                                        <h4>Мониторинг</h4>
+                                        <p>Проверка статуса системы и актуализация операций</p>
+                                        <small class="text-muted">Оба порта</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Платежи -->
+                    <div id="payment" class="content-section">
+                        <h2 class="mb-4"><i class="bi bi-credit-card text-primary me-2"></i>Методы работы с платежами
+                        </h2>
+
+                        <!-- Инициация платежа -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Инициация платежа</h4>
+                                <p class="mb-0 mt-2">Создаёт платёж на указанную сумму в тенге</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:<span class="payment-port">130</span>/v2/payment?amount=&lt;СУММА&gt;</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Сумма (в тенге):</label>
+                                            <input type="number" class="form-control" id="paymentAmount" value="100000"
+                                                min="1">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testPayment()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Создать платёж
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testPaymentProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="paymentResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Проверка статуса -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Проверка статуса операции</h4>
+                                <p class="mb-0 mt-2">Проверяет текущий статус операции по processId</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:<span class="payment-port">130</span>/v2/status?processId=&lt;PROCESS_ID&gt;</code>
+                                </div>
+
+                                <div class="alert alert-info alert-custom">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Статусы:</strong> wait (в процессе), success (успех), fail (ошибка), unknown
+                                    (неизвестно)
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Process ID:</label>
+                                            <input type="text" class="form-control" id="statusProcessId"
+                                                placeholder="Введите processId">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testStatus()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Проверить статус
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testStatusProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="statusResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Актуализация -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Актуализация статуса</h4>
+                                <p class="mb-0 mt-2">Актуализирует статус операции со статусом "unknown"</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:<span class="payment-port">130</span>/v2/actualize?processId=&lt;PROCESS_ID&gt;</code>
+                                </div>
+
+                                <div class="alert alert-warning alert-custom">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Внимание:</strong> Минимальный интервал между запросами — 10 секунд
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Process ID:</label>
+                                            <input type="text" class="form-control" id="actualizeProcessId"
+                                                placeholder="Process ID со статусом unknown">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testActualize()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Актуализировать
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testActualizeProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="actualizeResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Отмена платежа -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Отмена платежа</h4>
+                                <p class="mb-0 mt-2">Отменяет ранее инициированный платёж</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:<span class="payment-port">130</span>/v2/cancel?processId=&lt;PROCESS_ID&gt;</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Process ID:</label>
+                                            <input type="text" class="form-control" id="cancelProcessId"
+                                                placeholder="Process ID для отмены">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testCancel()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Отменить платёж
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testCancelProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="cancelResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QR-сканер -->
+                    <div id="qr-scanner" class="content-section">
+                        <h2 class="mb-4"><i class="bi bi-qr-code-scan text-primary me-2"></i>Методы работы с QR-сканером
+                        </h2>
+
+                        <div class="alert alert-info alert-custom">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Важно:</strong> Все методы QR-сканера работают на порту 3000
+                        </div>
+
+                        <!-- Список камер -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Получить список камер</h4>
+                                <p class="mb-0 mt-2">Возвращает список всех доступных камер</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:3000/cameras</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <button class="btn btn-test me-2" onclick="testCameras()">
+                                        <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                        Получить камеры
+                                    </button>
+                                    <button class="btn btn-proxy" onclick="testCamerasProxy()">
+                                        <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                        Через прокси
+                                    </button>
+                                    <div id="camerasResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Сканирование QR -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Сканировать QR-код</h4>
+                                <p class="mb-0 mt-2">Сканирует QR-код с указанной камеры</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:3000/scan-qr/&lt;CAMERA_ID&gt;?timeout=&lt;TIMEOUT&gt;</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">ID камеры:</label>
+                                            <input type="text" class="form-control" id="scanCameraId" value="0">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Timeout (мс):</label>
+                                            <input type="number" class="form-control" id="scanTimeout" value="15000">
+                                        </div>
+                                        <div class="col-md-4 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testScanQR()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Сканировать QR
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <button class="btn btn-proxy" onclick="testScanQRProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Сканировать через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="scanResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Снимок камеры -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Получить снимок с камеры</h4>
+                                <p class="mb-0 mt-2">Делает снимок с указанной камеры</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:3000/capture/&lt;CAMERA_ID&gt;</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">ID камеры:</label>
+                                            <input type="text" class="form-control" id="captureCameraId" value="0">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testCapture()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Сделать снимок
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testCaptureProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="captureResponse" class="response-panel" style="display:none;"></div>
+                                    <div id="captureImage" class="mt-3" style="display:none;">
+                                        <h6>Полученный снимок:</h6>
+                                        <img id="capturedImg" class="img-fluid rounded" style="max-width: 400px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Остановка сканирования -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge post-badge">POST</span>
+                                <h4 class="d-inline">Остановить сканирование</h4>
+                                <p class="mb-0 mt-2">Останавливает процесс сканирования QR-кода</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>POST http://109.175.215.40:3000/stop-scan/&lt;CAMERA_ID&gt;</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">ID камеры:</label>
+                                            <input type="text" class="form-control" id="stopScanCameraId" value="0">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testStopScan()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Остановить
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testStopScanProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="stopScanResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Статус системы -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <span class="method-badge get-badge">GET</span>
+                                <h4 class="d-inline">Статус системы</h4>
+                                <p class="mb-0 mt-2">Возвращает информацию о состоянии системы</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>GET http://109.175.215.40:3000/status</code>
+                                </div>
+
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Тестирование</h6>
+                                    <button class="btn btn-test me-2" onclick="testSystemStatus()">
+                                        <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                        Проверить статус
+                                    </button>
+                                    <button class="btn btn-proxy" onclick="testSystemStatusProxy()">
+                                        <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                        Через прокси
+                                    </button>
+                                    <div id="systemStatusResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Коды ошибок -->
+                    <div id="errors" class="content-section">
+                        <h2 class="mb-4"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Коды ошибок</h2>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Код</th>
+                                        <th>Статус</th>
+                                        <th>Описание</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-success">0</span></td>
+                                        <td><span class="status-indicator status-success"></span>Успех</td>
+                                        <td>Успешное выполнение запроса</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-warning">100</span></td>
+                                        <td><span class="status-indicator status-warning"></span>Предупреждение</td>
+                                        <td>Нет интернет-соединения</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">101</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Процесс не найден</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">102</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Неподдерживаемый метод оплаты</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">103</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Транзакция не может быть актуализирована</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">104</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Транзакция не найдена</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">105</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Ошибка в процессе выполнения</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">106</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Платежи заблокированы</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">107</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Предыдущая операция не завершена</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">108</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Ошибка при регистрации транзакции</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">999</span></td>
+                                        <td><span class="status-indicator status-error"></span>Ошибка</td>
+                                        <td>Ошибка валидации параметров или некорректный URL</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Примеры -->
+                    <div id="examples" class="content-section">
+                        <h2 class="mb-4"><i class="bi bi-code-slash text-primary me-2"></i>Примеры использования</h2>
+
+                        <!-- Полный цикл платежа -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <h4><i class="bi bi-arrow-repeat me-2"></i>Полный цикл платежа</h4>
+                                <p class="mb-0">Пример создания платежа и отслеживания его статуса</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Автоматический тест</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Сумма для теста:</label>
+                                            <input type="number" class="form-control" id="fullTestAmount" value="1000"
+                                                min="1">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-test me-2" onclick="testFullCycle()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Запустить полный тест
+                                            </button>
+                                            <button class="btn btn-proxy" onclick="testFullCycleProxy()">
+                                                <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                                Через прокси
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="fullTestResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+
+                                <h6 class="mt-4">Код примера:</h6>
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <pre><code class="language-bash"># 1. Создание платежа
+                                    curl -k -X GET "http://109.175.215.40:130/v2/payment?amount=100000"
+                                    
+                                    # 2. Проверка статуса (повторять каждую секунду)
+                                    curl -k -X GET "http://109.175.215.40:130/v2/status?processId=PROCESS_ID"
+                                    
+                                    # 3. При необходимости - отмена
+                                    curl -k -X GET "http://109.175.215.40:130/v2/cancel?processId=PROCESS_ID"</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Работа с QR -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <h4><i class="bi bi-qr-code me-2"></i>Работа с QR-сканером</h4>
+                                <p class="mb-0">Пример полного цикла работы с камерой и QR-кодами</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="test-panel">
+                                    <h6><i class="bi bi-play-circle me-2"></i>Автоматический тест QR</h6>
+                                    <button class="btn btn-test me-2" onclick="testQRCycle()">
+                                        <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                        Запустить тест QR-сканера
+                                    </button>
+                                    <button class="btn btn-proxy" onclick="testQRCycleProxy()">
+                                        <span class="loading spinner-border spinner-border-sm me-2"></span>
+                                        Через прокси
+                                    </button>
+                                    <div id="qrTestResponse" class="response-panel" style="display:none;"></div>
+                                </div>
+
+                                <h6 class="mt-4">Код примера:</h6>
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <pre><code class="language-bash"># 1. Получить список камер
+                                    curl -k -X GET "http://109.175.215.40:3000/cameras"
+                                    
+                                    # 2. Сканировать QR-код
+                                    curl -k -X GET "http://109.175.215.40:3000/scan-qr/0?timeout=15000"
+                                    
+                                    # 3. Получить снимок
+                                    curl -k -X GET "http://109.175.215.40:3000/capture/0" --output photo.jpg
+                                    
+                                    # 4. Остановить сканирование
+                                    curl -k -X POST "http://109.175.215.40:3000/stop-scan/0"</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JavaScript пример -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <h4><i class="bi bi-filetype-js me-2"></i>JavaScript интеграция</h4>
+                                <p class="mb-0">Пример интеграции API в JavaScript приложение</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <pre><code class="language-javascript">// Класс для работы с Kaspi SmartPOS API
+                                    class KaspiPOSAPI {
+                                        constructor(paymentPort = '130') {
+                                            this.paymentBaseUrl = `http://109.175.215.40:${paymentPort}`;
+                                            this.qrBaseUrl = 'http://109.175.215.40:3000';
+                                            this.proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                                        }
+                                    
+                                        async makeRequest(url, options = {}) {
+                                            try {
+                                                // Прямой запрос
+                                                const response = await fetch(url, options);
+                                                return await response.json();
+                                            } catch (error) {
+                                                // Если прямой запрос не работает, используем прокси
+                                                console.warn('Direct request failed, trying with proxy...');
+                                                const proxyResponse = await fetch(`${this.proxyUrl}${url}`, options);
+                                                return await proxyResponse.json();
+                                            }
+                                        }
+                                    
+                                        // Методы для работы с платежами
+                                        async createPayment(amount) {
+                                            return await this.makeRequest(`${this.paymentBaseUrl}/v2/payment?amount=${amount}`);
+                                        }
+                                    
+                                        async checkStatus(processId) {
+                                            return await this.makeRequest(`${this.paymentBaseUrl}/v2/status?processId=${processId}`);
+                                        }
+                                    
+                                        async cancelPayment(processId) {
+                                            return await this.makeRequest(`${this.paymentBaseUrl}/v2/cancel?processId=${processId}`);
+                                        }
+                                    
+                                        async actualizePayment(processId) {
+                                            return await this.makeRequest(`${this.paymentBaseUrl}/v2/actualize?processId=${processId}`);
+                                        }
+                                    
+                                        // Методы для работы с QR-сканером
+                                        async getCameras() {
+                                            return await this.makeRequest(`${this.qrBaseUrl}/cameras`);
+                                        }
+                                    
+                                        async scanQR(cameraId, timeout = 15000) {
+                                            return await this.makeRequest(`${this.qrBaseUrl}/scan-qr/${cameraId}?timeout=${timeout}`);
+                                        }
+                                    
+                                        async captureImage(cameraId) {
+                                            const response = await fetch(`${this.qrBaseUrl}/capture/${cameraId}`);
+                                            if (response.ok && response.headers.get('content-type')?.includes('image')) {
+                                                return await response.blob();
+                                            } else {
+                                                return await response.json();
+                                            }
+                                        }
+                                    
+                                        async stopScan(cameraId) {
+                                            return await this.makeRequest(`${this.qrBaseUrl}/stop-scan/${cameraId}`, {
+                                                method: 'POST'
+                                            });
+                                        }
+                                    
+                                        async getSystemStatus() {
+                                            return await this.makeRequest(`${this.qrBaseUrl}/status`);
+                                        }
+                                    }
+                                    
+                                    // Использование
+                                    const api = new KaspiPOSAPI('130');
+                                    
+                                    // Создание платежа
+                                    try {
+                                        const payment = await api.createPayment(100000);
+                                        console.log('Payment created:', payment);
+                                        
+                                        // Проверка статуса
+                                        const status = await api.checkStatus(payment.data.processId);
+                                        console.log('Payment status:', status);
+                                        
+                                        // Получение списка камер
+                                        const cameras = await api.getCameras();
+                                        console.log('Available cameras:', cameras);
+                                        
+                                    } catch (error) {
+                                        console.error('API Error:', error);
+                                    }</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PHP пример -->
+                        <div class="method-card">
+                            <div class="method-header">
+                                <h4><i class="bi bi-filetype-php me-2"></i>PHP интеграция</h4>
+                                <p class="mb-0">Пример интеграции API в PHP приложение</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <pre><code class="language-php"><?php
+                                    class KaspiPOSAPI {
+                                        private $paymentBaseUrl;
+                                        private $qrBaseUrl;
+                                        
+                                        public function __construct($paymentPort = '130') {
+                                            $this->paymentBaseUrl = "http://109.175.215.40:{$paymentPort}";
+                                            $this->qrBaseUrl = 'http://109.175.215.40:3000';
+                                        }
+                                        
+                                        private function makeRequest($url, $method = 'GET') {
+                                            $context = stream_context_create([
+                                                'http' => [
+                                                    'method' => $method,
+                                                    'timeout' => 30,
+                                                    'ignore_errors' => true
+                                                ],
+                                                'ssl' => [
+                                                    'verify_peer' => false,
+                                                    'verify_peer_name' => false
+                                                ]
+                                            ]);
+                                            
+                                            $response = file_get_contents($url, false, $context);
+                                            
+                                            if ($response === false) {
+                                                throw new Exception('Request failed');
+                                            }
+                                            
+                                            return json_decode($response, true);
+                                        }
+                                        
+                                        // Методы для работы с платежами
+                                        public function createPayment($amount) {
+                                            return $this->makeRequest("{$this->paymentBaseUrl}/v2/payment?amount={$amount}");
+                                        }
+                                        
+                                        public function checkStatus($processId) {
+                                            return $this->makeRequest("{$this->paymentBaseUrl}/v2/status?processId={$processId}");
+                                        }
+                                        
+                                        public function cancelPayment($processId) {
+                                            return $this->makeRequest("{$this->paymentBaseUrl}/v2/cancel?processId={$processId}");
+                                        }
+                                        
+                                        public function actualizePayment($processId) {
+                                            return $this->makeRequest("{$this->paymentBaseUrl}/v2/actualize?processId={$processId}");
+                                        }
+                                        
+                                        // Методы для работы с QR-сканером
+                                        public function getCameras() {
+                                            return $this->makeRequest("{$this->qrBaseUrl}/cameras");
+                                        }
+                                        
+                                        public function scanQR($cameraId, $timeout = 15000) {
+                                            return $this->makeRequest("{$this->qrBaseUrl}/scan-qr/{$cameraId}?timeout={$timeout}");
+                                        }
+                                        
+                                        public function captureImage($cameraId) {
+                                            // Для изображений нужна отдельная обработка
+                                            $url = "{$this->qrBaseUrl}/capture/{$cameraId}";
+                                            $imageData = file_get_contents($url);
+                                            
+                                            if ($imageData !== false) {
+                                                // Сохраняем изображение
+                                                file_put_contents("capture_{$cameraId}.jpg", $imageData);
+                                                return true;
+                                            }
+                                            
+                                            return false;
+                                        }
+                                        
+                                        public function stopScan($cameraId) {
+                                            return $this->makeRequest("{$this->qrBaseUrl}/stop-scan/{$cameraId}", 'POST');
+                                        }
+                                        
+                                        public function getSystemStatus() {
+                                            return $this->makeRequest("{$this->qrBaseUrl}/status");
+                                        }
+                                    }
+                                    
+                                    // Использование
+                                    $api = new KaspiPOSAPI('130');
+                                    
+                                    try {
+                                        // Создание платежа
+                                        $payment = $api->createPayment(100000);
+                                        echo "Payment created: " . json_encode($payment) . "\n";
+                                        
+                                        if (isset($payment['data']['processId'])) {
+                                            // Проверка статуса
+                                            $status = $api->checkStatus($payment['data']['processId']);
+                                            echo "Payment status: " . json_encode($status) . "\n";
+                                        }
+                                        
+                                        // Получение списка камер
+                                        $cameras = $api->getCameras();
+                                        echo "Available cameras: " . json_encode($cameras) . "\n";
+                                        
+                                    } catch (Exception $e) {
+                                        echo "Error: " . $e->getMessage() . "\n";
+                                    }
+                                    ?></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Prism.js для подсветки кода -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script>
+        // Глобальные переменные
+        let currentPort = '130';
+        let paymentBaseUrl = `http://109.175.215.40:${currentPort}`;
+        let qrBaseUrl = 'http://109.175.215.40:3000';
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
+        // Инициализация
+        $(document).ready(function () {
+            // Обработчик смены порта
+            $('#portSelector').on('change', function () {
+                currentPort = $(this).val();
+                paymentBaseUrl = `http://109.175.215.40:${currentPort}`;
+                $('#currentPort').text(currentPort);
+                $('#paymentPort').text(currentPort);
+
+                // Обновляем все элементы с классом payment-port
+                $('.payment-port').text(currentPort);
+            });
+
+            // Обработчик навигации
+            $('.nav-link').on('click', function (e) {
+                e.preventDefault();
+                const section = $(this).data('section');
+                showSection(section);
+
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // Подсветка кода
+            Prism.highlightAll();
+        });
+
+        // Функция показа секции
+        function showSection(sectionId) {
+            $('.content-section').removeClass('active');
+            $(`#${sectionId}`).addClass('active');
+        }
+
+        // Функция копирования в буфер обмена
+        function copyToClipboard(button) {
+            const codeBlock = $(button).siblings('code, pre').text();
+            navigator.clipboard.writeText(codeBlock).then(() => {
+                $(button).text('Скопировано!');
+                setTimeout(() => {
+                    $(button).text('Копировать');
+                }, 2000);
+            });
+        }
+
+        // Функция показа загрузки
+        function showLoading(button) {
+            $(button).find('.loading').addClass('show');
+            $(button).prop('disabled', true);
+        }
+
+        // Функция скрытия загрузки
+        function hideLoading(button) {
+            $(button).find('.loading').removeClass('show');
+            $(button).prop('disabled', false);
+        }
+
+        // Функция отображения ответа
+        function showResponse(containerId, data, isError = false) {
+            const container = $(`#${containerId}`);
+            const formattedData = JSON.stringify(data, null, 2);
+
+            container.html(`<pre><code class="language-json">${formattedData}</code></pre>`);
+            container.show();
+
+            if (isError) {
+                container.addClass('border-danger');
+            } else {
+                container.removeClass('border-danger');
+            }
+
+            Prism.highlightElement(container.find('code')[0]);
+        }
+
+        // Универсальная функция для запросов
+        async function makeRequest(url, useProxy = false) {
+            const finalUrl = useProxy ? `${proxyUrl}${url}` : url;
+
+            const response = await fetch(finalUrl, {
+                method: 'GET',
+                headers: useProxy ? {
+                    'X-Requested-With': 'XMLHttpRequest'
+                } : {}
+            });
+
+            return response;
+        }
+
+        // Универсальная функция для POST запросов
+        async function makePostRequest(url, useProxy = false) {
+            const finalUrl = useProxy ? `${proxyUrl}${url}` : url;
+
+            const response = await fetch(finalUrl, {
+                method: 'POST',
+                headers: useProxy ? {
+                    'X-Requested-With': 'XMLHttpRequest'
+                } : {}
+            });
+
+            return response;
+        }
+
+        // Тест создания платежа
+        async function testPayment(useProxy = false) {
+            const button = event.target;
+            const amount = $('#paymentAmount').val();
+
+            if (!amount || amount <= 0) {
+                alert('Введите корректную сумму');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${paymentBaseUrl}/v2/payment?amount=${amount}`, useProxy);
+                const data = await response.json();
+
+                showResponse('paymentResponse', data, !response.ok);
+
+                // Автоматически заполняем processId в других полях
+                if (data.data && data.data.processId) {
+                    $('#statusProcessId').val(data.data.processId);
+                    $('#cancelProcessId').val(data.data.processId);
+                    $('#actualizeProcessId').val(data.data.processId);
+                }
+
+            } catch (error) {
+                showResponse('paymentResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testPaymentProxy() {
+            testPayment(true);
+        }
+
+        // Тест проверки статуса
+        async function testStatus(useProxy = false) {
+            const button = event.target;
+            const processId = $('#statusProcessId').val();
+
+            if (!processId) {
+                alert('Введите Process ID');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${paymentBaseUrl}/v2/status?processId=${processId}`, useProxy);
+                const data = await response.json();
+
+                showResponse('statusResponse', data, !response.ok);
+
+            } catch (error) {
+                showResponse('statusResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testStatusProxy() {
+            testStatus(true);
+        }
+
+        // Тест актуализации
+        async function testActualize(useProxy = false) {
+            const button = event.target;
+            const processId = $('#actualizeProcessId').val();
+
+            if (!processId) {
+                alert('Введите Process ID');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${paymentBaseUrl}/v2/actualize?processId=${processId}`, useProxy);
+                const data = await response.json();
+
+                showResponse('actualizeResponse', data, !response.ok);
+
+            } catch (error) {
+                showResponse('actualizeResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testActualizeProxy() {
+            testActualize(true);
+        }
+
+        // Тест отмены платежа
+        async function testCancel(useProxy = false) {
+            const button = event.target;
+            const processId = $('#cancelProcessId').val();
+
+            if (!processId) {
+                alert('Введите Process ID');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${paymentBaseUrl}/v2/cancel?processId=${processId}`, useProxy);
+                const data = await response.json();
+
+                showResponse('cancelResponse', data, !response.ok);
+
+            } catch (error) {
+                showResponse('cancelResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testCancelProxy() {
+            testCancel(true);
+        }
+
+        // Тест получения списка камер
+        async function testCameras(useProxy = false) {
+            const button = event.target;
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${qrBaseUrl}/cameras`, useProxy);
+                const data = await response.json();
+
+                showResponse('camerasResponse', data, !response.ok);
+
+                // Автоматически заполняем ID первой камеры в других полях
+                if (data.success && data.cameras && data.cameras.length > 0) {
+                    const firstCameraId = data.cameras[0].id;
+                    $('#scanCameraId').val(firstCameraId);
+                    $('#captureCameraId').val(firstCameraId);
+                    $('#stopScanCameraId').val(firstCameraId);
+                }
+
+            } catch (error) {
+                showResponse('camerasResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testCamerasProxy() {
+            testCameras(true);
+        }
+
+        // Тест сканирования QR
+        async function testScanQR(useProxy = false) {
+            const button = event.target;
+            const cameraId = $('#scanCameraId').val();
+            const timeout = $('#scanTimeout').val();
+
+            if (!cameraId) {
+                alert('Введите ID камеры');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${qrBaseUrl}/scan-qr/${cameraId}?timeout=${timeout}`, useProxy);
+                const data = await response.json();
+
+                showResponse('scanResponse', data, !response.ok);
+
+            } catch (error) {
+                showResponse('scanResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testScanQRProxy() {
+            testScanQR(true);
+        }
+
+        // Тест получения снимка
+        async function testCapture(useProxy = false) {
+            const button = event.target;
+            const cameraId = $('#captureCameraId').val();
+
+            if (!cameraId) {
+                alert('Введите ID камеры');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${qrBaseUrl}/capture/${cameraId}`, useProxy);
+
+                // Проверяем, является ли ответ изображением
+                const contentType = response.headers.get('content-type');
+
+                if (response.ok && contentType && contentType.includes('image')) {
+                    // Это изображение
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+
+                    $('#capturedImg').attr('src', imageUrl);
+                    $('#captureImage').show();
+
+                    showResponse('captureResponse', {
+                        success: true,
+                        message: 'Снимок успешно получен',
+                        contentType: contentType,
+                        size: blob.size + ' bytes'
+                    });
+                } else {
+                    // Это JSON ответ (скорее всего ошибка)
+                    const data = await response.json();
+                    showResponse('captureResponse', data, !response.ok);
+                    $('#captureImage').hide();
+                }
+
+            } catch (error) {
+                showResponse('captureResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+                $('#captureImage').hide();
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testCaptureProxy() {
+            testCapture(true);
+        }
+
+        // Тест остановки сканирования
+        async function testStopScan(useProxy = false) {
+            const button = event.target;
+            const cameraId = $('#stopScanCameraId').val();
+
+            if (!cameraId) {
+                alert('Введите ID камеры');
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await makePostRequest(`${qrBaseUrl}/stop-scan/${cameraId}`, useProxy);
+                const data = await response.json();
+
+                showResponse('stopScanResponse', data, !response.ok);
+
+            } catch (error) {
+                showResponse('stopScanResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testStopScanProxy() {
+            testStopScan(true);
+        }
+
+        // Тест статуса системы
+        async function testSystemStatus(useProxy = false) {
+            const button = event.target;
+            showLoading(button);
+
+            try {
+                const response = await makeRequest(`${qrBaseUrl}/status`, useProxy);
+                const data = await response.json();
+
+                showResponse('systemStatusResponse', data, !response.ok);
+
+            } catch (error) {
+                showResponse('systemStatusResponse', {
+                    error: error.message,
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован. Попробуйте через прокси.'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testSystemStatusProxy() {
+            testSystemStatus(true);
+        }
+
+        // Полный тест цикла платежа
+        async function testFullCycle(useProxy = false) {
+            const button = event.target;
+            const amount = $('#fullTestAmount').val();
+
+            if (!amount || amount <= 0) {
+                alert('Введите корректную сумму');
+                return;
+            }
+
+            showLoading(button);
+
+            let log = [];
+
+            try {
+                // Шаг 1: Создание платежа
+                log.push('🚀 Создание платежа...');
+                const paymentResponse = await makeRequest(`${paymentBaseUrl}/v2/payment?amount=${amount}`, useProxy);
+                const paymentData = await paymentResponse.json();
+
+                if (paymentData.data && paymentData.data.processId) {
+                    log.push(`✅ Платёж создан. ProcessId: ${paymentData.data.processId}`);
+
+                    // Шаг 2: Проверка статуса несколько раз
+                    const processId = paymentData.data.processId;
+                    let attempts = 0;
+                    const maxAttempts = 5;
+
+                    while (attempts < maxAttempts) {
+                        attempts++;
+                        log.push(`🔍 Проверка статуса (попытка ${attempts})...`);
+
+                        const statusResponse = await makeRequest(`${paymentBaseUrl}/v2/status?processId=${processId}`, useProxy);
+                        const statusData = await statusResponse.json();
+
+                        if (statusData.data) {
+                            log.push(`📊 Статус: ${statusData.data.status}`);
+
+                            if (statusData.data.status === 'success' || statusData.data.status === 'fail') {
+                                log.push('🏁 Операция завершена');
+                                break;
+                            }
+                        }
+
+                        // Ждём 2 секунды перед следующей проверкой
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    }
+
+                    // Шаг 3: Отмена (если операция всё ещё в процессе)
+                    if (attempts >= maxAttempts) {
+                        log.push('⏰ Превышено время ожидания, отменяем платёж...');
+                        const cancelResponse = await makeRequest(`${paymentBaseUrl}/v2/cancel?processId=${processId}`, useProxy);
+                        const cancelData = await cancelResponse.json();
+
+                        if (cancelResponse.ok) {
+                            log.push('❌ Платёж отменён');
+                        } else {
+                            log.push('⚠️ Ошибка при отмене платежа');
+                        }
+                    }
+                } else {
+                    log.push('❌ Ошибка при создании платежа');
+                }
+
+                showResponse('fullTestResponse', {
+                    log: log,
+                    paymentData: paymentData,
+                    method: useProxy ? 'Через CORS прокси' : 'Прямой запрос'
+                });
+
+            } catch (error) {
+                log.push(`❌ Ошибка: ${error.message}`);
+                showResponse('fullTestResponse', {
+                    log: log,
+                    error: error.message,
+                    method: useProxy ? 'Через CORS прокси' : 'Прямой запрос',
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован браузером'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testFullCycleProxy() {
+            testFullCycle(true);
+        }
+
+        // Полный тест QR-сканера
+        async function testQRCycle(useProxy = false) {
+            const button = event.target;
+            showLoading(button);
+
+            let log = [];
+
+            try {
+                // Шаг 1: Получение списка камер
+                log.push('📷 Получение списка камер...');
+                const camerasResponse = await makeRequest(`${qrBaseUrl}/cameras`, useProxy);
+                const camerasData = await camerasResponse.json();
+
+                if (camerasData.success && camerasData.cameras && camerasData.cameras.length > 0) {
+                    log.push(`✅ Найдено камер: ${camerasData.cameras.length}`);
+
+                    const cameraId = camerasData.cameras[0].id;
+                    log.push(`🎯 Используем камеру: ${cameraId} (${camerasData.cameras[0].name})`);
+
+                    // Шаг 2: Проверка статуса системы
+                    log.push('🔍 Проверка статуса системы...');
+                    const statusResponse = await makeRequest(`${qrBaseUrl}/status`, useProxy);
+                    const statusData = await statusResponse.json();
+
+                    if (statusData.success) {
+                        log.push(`✅ Система работает. Активных камер: ${statusData.activeCameras}`);
+                    }
+
+                    // Шаг 3: Попытка сделать снимок
+                    log.push('📸 Попытка сделать снимок...');
+                    const captureResponse = await makeRequest(`${qrBaseUrl}/capture/${cameraId}`, useProxy);
+
+                    if (captureResponse.ok && captureResponse.headers.get('content-type')?.includes('image')) {
+                        log.push('✅ Снимок успешно получен');
+                    } else {
+                        log.push('⚠️ Не удалось получить снимок');
+                    }
+
+                    log.push('🏁 Тест QR-сканера завершён');
+                } else {
+                    log.push('❌ Камеры не найдены');
+                }
+
+                showResponse('qrTestResponse', {
+                    log: log,
+                    camerasData: camerasData,
+                    method: useProxy ? 'Через CORS прокси' : 'Прямой запрос'
+                });
+
+            } catch (error) {
+                log.push(`❌ Ошибка: ${error.message}`);
+                showResponse('qrTestResponse', {
+                    log: log,
+                    error: error.message,
+                    method: useProxy ? 'Через CORS прокси' : 'Прямой запрос',
+                    note: useProxy ? 'Ошибка через прокси' : 'Прямой запрос заблокирован браузером'
+                }, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        function testQRCycleProxy() {
+            testQRCycle(true);
+        }
+
+        // Функция для активации CORS прокси
+        function activateCORSProxy() {
+            window.open('https://cors-anywhere.herokuapp.com/corsdemo', '_blank');
+        }
+
+        // Добавляем информацию о CORS прокси при загрузке страницы
+        $(document).ready(function () {
+            // Добавляем уведомление о необходимости активации CORS прокси
+            const corsInfo = `
+                <div class="alert alert-warning mt-3">
+                    <h6><i class="bi bi-info-circle me-2"></i>Информация о CORS прокси</h6>
+                    <p class="mb-2">Для работы кнопок "Через прокси" необходимо:</p>
+                    <ol class="mb-2">
+                        <li>Перейти по ссылке: <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">https://cors-anywhere.herokuapp.com/corsdemo</a></li>
+                        <li>Нажать кнопку "Request temporary access to the demo server"</li>
+                        <li>Вернуться на эту страницу и использовать кнопки "Через прокси"</li>
+                    </ol>
+                    <button class="btn btn-sm btn-warning" onclick="activateCORSProxy()">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Активировать CORS прокси
+                    </button>
+                </div>
+            `;
+
+            $('.https-warning').after(corsInfo);
+        });
+
+        // Функция для проверки доступности API
+        async function checkAPIAvailability() {
+            try {
+                const response = await fetch(`${paymentBaseUrl}/v2/payment?amount=1`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // Добавляем индикатор статуса API
+        $(document).ready(function () {
+            const statusIndicator = `
+                <div id="apiStatus" class="alert alert-info mt-3">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        <span>Проверка доступности API...</span>
+                    </div>
+                </div>
+            `;
+
+            $('.hero-section .container').append(statusIndicator);
+
+            // Проверяем доступность API
+            setTimeout(async () => {
+                const isAvailable = await checkAPIAvailability();
+                const statusEl = $('#apiStatus');
+
+                if (isAvailable) {
+                    statusEl.removeClass('alert-info').addClass('alert-success');
+                    statusEl.html(`
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>API доступно для прямых запросов</span>
+                        </div>
+                    `);
+                } else {
+                    statusEl.removeClass('alert-info').addClass('alert-warning');
+                    statusEl.html(`
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            <span>API недоступно для прямых запросов. Используйте CORS прокси или HTTP версию страницы</span>
+                        </div>
+                    `);
+                }
+            }, 2000);
+        });
+
+        // Функция для генерации curl команд
+        function generateCurlCommand(endpoint, method = 'GET', port = null) {
+            let url;
+            if (endpoint.includes('/cameras') || endpoint.includes('/scan-qr') || endpoint.includes('/capture') || endpoint.includes('/stop-scan') || endpoint === '/status') {
+                url = `${qrBaseUrl}${endpoint}`;
+            } else {
+                url = `${paymentBaseUrl}${endpoint}`;
+            }
+
+            let command = `curl -k -X ${method}`;
+
+            if (method === 'POST') {
+                command += ` -H "Content-Type: application/json"`;
+            }
+
+            command += ` "${url}"`;
+
+            return command;
+        }
+
+        // Добавляем генератор curl команд
+        function showCurlCommand(endpoint, method = 'GET') {
+            const command = generateCurlCommand(endpoint, method);
+
+            const modal = `
+                <div class="modal fade" id="curlModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-terminal me-2"></i>Команда cURL
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="code-block position-relative">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                                    <code>${command}</code>
+                                </div>
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Эту команду можно выполнить в терминале или командной строке
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Удаляем предыдущий modal если есть
+            $('#curlModal').remove();
+
+            // Добавляем новый modal
+            $('body').append(modal);
+
+            // Показываем modal
+            const modalEl = new bootstrap.Modal(document.getElementById('curlModal'));
+            modalEl.show();
+        }
+
+        // Добавляем кнопки для генерации curl команд в каждую карточку метода
+        $(document).ready(function () {
+            $('.method-card .test-panel').each(function () {
+                const card = $(this).closest('.method-card');
+                const methodHeader = card.find('.method-header h4').text();
+
+                let endpoint = '';
+                let method = 'GET';
+
+                // Определяем endpoint по названию метода
+                if (methodHeader.includes('Инициация платежа')) {
+                    endpoint = '/v2/payment?amount=100000';
+                } else if (methodHeader.includes('Проверка статуса')) {
+                    endpoint = '/v2/status?processId=PROCESS_ID';
+                } else if (methodHeader.includes('Актуализация')) {
+                    endpoint = '/v2/actualize?processId=PROCESS_ID';
+                } else if (methodHeader.includes('Отмена платежа')) {
+                    endpoint = '/v2/cancel?processId=PROCESS_ID';
+                } else if (methodHeader.includes('список камер')) {
+                    endpoint = '/cameras';
+                } else if (methodHeader.includes('Сканировать QR')) {
+                    endpoint = '/scan-qr/0?timeout=15000';
+                } else if (methodHeader.includes('снимок')) {
+                    endpoint = '/capture/0';
+                } else if (methodHeader.includes('Остановить')) {
+                    endpoint = '/stop-scan/0';
+                    method = 'POST';
+                } else if (methodHeader.includes('Статус системы')) {
+                    endpoint = '/status';
+                }
+
+                if (endpoint) {
+                    const curlBtn = `
+                        <button class="btn btn-outline-secondary btn-sm ms-2" onclick="showCurlCommand('${endpoint}', '${method}')">
+                            <i class="bi bi-terminal me-1"></i>cURL
+                        </button>
+                    `;
+
+                    $(this).find('.row:first .col-md-6:last').append(curlBtn);
+                }
+            });
+        });
+
+        // Добавляем функцию для экспорта всех примеров
+        function exportAllExamples() {
+            const examples = {
+                payment: generateCurlCommand('/v2/payment?amount=100000'),
+                status: generateCurlCommand('/v2/status?processId=PROCESS_ID'),
+                actualize: generateCurlCommand('/v2/actualize?processId=PROCESS_ID'),
+                cancel: generateCurlCommand('/v2/cancel?processId=PROCESS_ID'),
+                cameras: generateCurlCommand('/cameras'),
+                scanQR: generateCurlCommand('/scan-qr/0?timeout=15000'),
+                capture: generateCurlCommand('/capture/0'),
+                stopScan: generateCurlCommand('/stop-scan/0', 'POST'),
+                systemStatus: generateCurlCommand('/status')
+            };
+
+            const allCommands = Object.entries(examples)
+                .map(([key, command]) => `# ${key}\n${command}`)
+                .join('\n\n');
+
+            const blob = new Blob([allCommands], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'kaspi-pos-api-examples.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Добавляем кнопку экспорта в раздел примеров
+        $(document).ready(function () {
+            const exportBtn = `
+                <div class="text-end mb-4">
+                    <button class="btn btn-outline-primary" onclick="exportAllExamples()">
+                        <i class="bi bi-download me-2"></i>Скачать все примеры
+                    </button>
+                </div>
+            `;
+
+            $('#examples h2').after(exportBtn);
+        });
+
+        // Добавляем горячие клавиши
+        $(document).ready(function () {
+            $(document).on('keydown', function (e) {
+                // Ctrl + 1-5 для быстрого переключения между разделами
+                if (e.ctrlKey && e.which >= 49 && e.which <= 53) {
+                    e.preventDefault();
+                    const sections = ['overview', 'payment', 'qr-scanner', 'errors', 'examples'];
+                    const sectionIndex = e.which - 49;
+
+                    if (sections[sectionIndex]) {
+                        showSection(sections[sectionIndex]);
+                        $('.nav-link').removeClass('active');
+                        $(`.nav-link[data-section="${sections[sectionIndex]}"]`).addClass('active');
+                    }
+                }
+            });
+
+            // Добавляем подсказку о горячих клавишах
+            const hotkeysInfo = `
+                <div class="alert alert-light mt-3">
+                    <small class="text-muted">
+                        <i class="bi bi-keyboard me-1"></i>
+                        <strong>Горячие клавиши:</strong>
+                        Ctrl+1 - Обзор, Ctrl+2 - Платежи, Ctrl+3 - QR-сканер, Ctrl+4 - Ошибки, Ctrl+5 - Примеры
+                    </small>
+                </div>
+            `;
+
+            $('.sidebar .p-3').append(hotkeysInfo);
+        });
+
+        // Функция для сохранения настроек в localStorage
+        function saveSettings() {
+            const settings = {
+                port: currentPort,
+                lastSection: $('.nav-link.active').data('section')
+            };
+            localStorage.setItem('kaspiPOSSettings', JSON.stringify(settings));
+        }
+
+        // Функция для загрузки настроек из localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('kaspiPOSSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+
+                if (settings.port) {
+                    $('#portSelector').val(settings.port);
+                    currentPort = settings.port;
+                    paymentBaseUrl = `http://109.175.215.40:${currentPort}`;
+                    $('#currentPort').text(currentPort);
+                    $('#paymentPort').text(currentPort);
+                    $('.payment-port').text(currentPort);
+                }
+
+                if (settings.lastSection) {
+                    setTimeout(() => {
+                        showSection(settings.lastSection);
+                        $('.nav-link').removeClass('active');
+                        $(`.nav-link[data-section="${settings.lastSection}"]`).addClass('active');
+                    }, 100);
+                }
+            }
+        }
+
+        // Сохраняем настройки при изменениях
+        $(document).ready(function () {
+            loadSettings();
+
+            $('#portSelector').on('change', saveSettings);
+            $('.nav-link').on('click', function () {
+                setTimeout(saveSettings, 100);
+            });
+        });
+
+        // Обновляем порты при загрузке
+        $(document).ready(function () {
+            $('#currentPort').text(currentPort);
+            $('#paymentPort').text(currentPort);
+            $('.payment-port').text(currentPort);
+        });
+    </script>
+</body>
+
+</html>

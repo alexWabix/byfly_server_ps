@@ -1,0 +1,1 @@
+../mindee/mindee/bin/cli.php
